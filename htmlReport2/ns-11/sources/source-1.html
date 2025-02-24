@@ -1,0 +1,203 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > accountServiceController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.mypayment.accountService.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: accountServiceController (com.mypayment.accountService.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">accountServiceController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mypayment.accountService.controller;
+&nbsp;
+&nbsp;import com.mypayment.accountService.Constants.Accountconstants;
+&nbsp;import com.mypayment.accountService.DTO.accountCreationDTO;
+&nbsp;import com.mypayment.accountService.DTO.responseDTO;
+&nbsp;import com.mypayment.accountService.exception.invalidDataException;
+&nbsp;import com.mypayment.accountService.model.accountCreation;
+&nbsp;import com.mypayment.accountService.service.accountService;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.Optional;
+&nbsp;import com.mypayment.accountService.repo.accountCreationRepo;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/account&quot;)
+&nbsp;@Validated
+<b class="nc">&nbsp;public class accountServiceController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private accountService accountService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private accountCreationRepo accountCreationRepo;
+&nbsp;
+<b class="nc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(accountServiceController.class);</b>
+&nbsp;
+&nbsp;    @PostMapping(&quot;/createaccount&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; createaccount(@Valid @RequestBody accountCreationDTO account) {
+<b class="nc">&nbsp;        String accountNumber = account.getAccountNumber();</b>
+<b class="nc">&nbsp;        String accountHolderName = account.getAccountHolderName();</b>
+<b class="nc">&nbsp;        String accountType = account.getAccountType();</b>
+&nbsp;
+<b class="nc">&nbsp;        Optional&lt;accountCreation&gt; checkAccount = accountCreationRepo.findByAccountNumber(accountNumber);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (accountNumber.isEmpty() || accountHolderName == null || accountType.isEmpty()) {</b>
+<b class="nc">&nbsp;            logger.error(&quot;Invalid data has been provided{}{}{}{}{}{}&quot;, &quot;Account number &quot;,account.getAccountNumber(),&quot; Name &quot;,account.getAccountHolderName());</b>
+<b class="nc">&nbsp;            throw new invalidDataException(&quot;The Account details have you have entered are not correct. Please check the account number, account holder name and the balance you have entered \n&quot; + &quot;Account number given is &quot; + account.getAccountNumber() + &quot;The name you hav given is &quot; + account.getAccountHolderName() );</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if(checkAccount.isPresent()){</b>
+<b class="nc">&nbsp;            logger.error(&quot;Account with Account number {} already exists&quot;, accountNumber);</b>
+<b class="nc">&nbsp;            throw new invalidDataException(&quot;The Account with Account number &quot; + accountNumber + &quot; already exists&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        accountService.createAccount(accountNumber,accountHolderName,accountType);</b>
+<b class="nc">&nbsp;        logger.info(&quot;Account has been created successfully with Account number {} and the account holder name is {}&quot;, account.getAccountNumber(), account.getAccountHolderName());</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(new responseDTO(Accountconstants.STATUS_201, Accountconstants.MESSAGE_201, &quot;The account has been created successfully with Account number &quot; + account.getAccountNumber() + &quot; and the account holder name is &quot; + account.getAccountHolderName()));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/deleteaccount/{accountNumber}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; deleteAccount(@Valid @PathVariable(&quot;accountNumber&quot;) String accountNumber) {
+<b class="nc">&nbsp;        Optional&lt;accountCreation&gt; account = accountCreationRepo.findByAccountNumber(accountNumber);</b>
+<b class="nc">&nbsp;        accountCreation accountCreation = account.get();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (account.isPresent() &amp;&amp; accountCreation.getAccountBalance() == 0) {</b>
+<b class="nc">&nbsp;            logger.info(&quot;Account has been deleted successfully with Account number {}&quot;, accountNumber);</b>
+<b class="nc">&nbsp;            accountService.deleteAccount(accountNumber);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK).body(new responseDTO(Accountconstants.STATUS_200, Accountconstants.MESSAGE_DELETE_200, &quot;The account has been deleted successfully with Account number &quot; + accountNumber));</b>
+&nbsp;        }else {
+<b class="nc">&nbsp;            logger.error(&quot;Account with Account number {} has balance of {}&quot;, accountNumber, accountCreation.getAccountBalance());</b>
+<b class="nc">&nbsp;            throw new invalidDataException(&quot;The Account with Account number &quot; + accountNumber + &quot; has a balance of &quot; + accountCreation.getAccountBalance() + &quot; and hence cannot be deleted&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/checkAccountExists&quot;)
+&nbsp;    public boolean checkAccountExists(@RequestParam(&quot;accountNumber&quot;) String accountNumber) {
+<b class="nc">&nbsp;        return accountService.checkAccountExists(accountNumber);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/checkBalance&quot;)
+&nbsp;    public double checkBalance(@RequestParam(&quot;accountNumber&quot;) String accountNumber) {
+<b class="nc">&nbsp;        return accountService.checkBalance(accountNumber);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-02-20 19:15</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > accountCreationDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.mypayment.accountService.DTO</a>
+</div>
+
+<h1>Coverage Summary for Class: accountCreationDTO (com.mypayment.accountService.DTO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">accountCreationDTO</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.6%
+  </span>
+  <span class="absValue">
+    (4/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (10/20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mypayment.accountService.DTO;
+&nbsp;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import jakarta.validation.constraints.Size;
+&nbsp;import org.hibernate.validator.constraints.UniqueElements;
+&nbsp;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;
+&nbsp;public class accountCreationDTO implements Serializable {
+&nbsp;
+&nbsp;
+&nbsp;    @NotNull(message = &quot;Account number is required&quot;)
+&nbsp;    @Pattern(regexp = &quot;(^$|[0-9]{10})&quot;, message = &quot;Check the account number it is not valid&quot;)
+&nbsp;    private String accountNumber;
+&nbsp;
+&nbsp;    @NotNull(message = &quot;Account holder name is required&quot;)
+&nbsp;    @Size(min = 3, max = 50, message = &quot;Account holder name must be between 3 and 50 characters&quot;)
+&nbsp;    private String accountHolderName;
+&nbsp;
+&nbsp;    @NotNull(message = &quot;Account type is required&quot;)
+&nbsp;    @Size(min = 3, max = 50, message = &quot;Account type must be between 3 and 50 characters&quot;)
+&nbsp;    private String accountType;
+&nbsp;
+&nbsp;    private double accountBalance;
+&nbsp;    private String accountStatus;
+&nbsp;
+&nbsp;    private LocalDateTime createdDate;
+&nbsp;
+<b class="nc">&nbsp;    public accountCreationDTO() {</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public accountCreationDTO(String accountNumber, String accountHolderName, String accountType, double accountBalance, String accountStatus, LocalDateTime createdDate) {</b>
+<b class="fc">&nbsp;        this.accountNumber = accountNumber;</b>
+<b class="fc">&nbsp;        this.accountHolderName = accountHolderName;</b>
+<b class="fc">&nbsp;        this.accountType = accountType;</b>
+<b class="fc">&nbsp;        this.accountBalance = accountBalance;</b>
+<b class="fc">&nbsp;        this.accountStatus = accountStatus;</b>
+<b class="fc">&nbsp;        this.createdDate = createdDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getAccountNumber() {
+<b class="fc">&nbsp;        return accountNumber;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAccountNumber(String accountNumber) {
+<b class="nc">&nbsp;        this.accountNumber = accountNumber;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getAccountHolderName() {
+<b class="fc">&nbsp;        return accountHolderName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAccountHolderName(String accountHolderName) {
+<b class="nc">&nbsp;        this.accountHolderName = accountHolderName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getAccountType() {
+<b class="fc">&nbsp;        return accountType;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAccountType(String accountType) {
+<b class="nc">&nbsp;        this.accountType = accountType;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getAccountBalance() {
+<b class="nc">&nbsp;        return accountBalance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAccountBalance(double accountBalance) {
+<b class="nc">&nbsp;        this.accountBalance = accountBalance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getAccountStatus() {
+<b class="nc">&nbsp;        return accountStatus;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAccountStatus(String accountStatus) {
+<b class="nc">&nbsp;        this.accountStatus = accountStatus;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public LocalDateTime getCreatedDate() {
+<b class="nc">&nbsp;        return createdDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCreatedDate(LocalDateTime createdDate) {
+<b class="nc">&nbsp;        this.createdDate = createdDate;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-02-20 19:15</div>
+</div>
+</body>
+</html>

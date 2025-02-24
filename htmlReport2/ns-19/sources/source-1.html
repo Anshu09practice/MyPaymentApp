@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > accountServiceCompensationDeposit</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.mypayment.depositService.compensation</a>
+</div>
+
+<h1>Coverage Summary for Class: accountServiceCompensationDeposit (com.mypayment.depositService.compensation)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">accountServiceCompensationDeposit</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mypayment.depositService.compensation;
+&nbsp;
+&nbsp;
+&nbsp;import com.mypayment.depositService.Constants.Depositconstants;
+&nbsp;import com.mypayment.depositService.DTO.depositDTO;
+&nbsp;import com.mypayment.depositService.DTO.responseDTO;
+&nbsp;import com.mypayment.depositService.exception.invalidDataException;
+&nbsp;import com.mypayment.depositService.exception.retryException;
+&nbsp;import com.mypayment.depositService.mapper.depositMapper;
+&nbsp;import com.mypayment.depositService.model.deposit;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.kafka.annotation.KafkaListener;
+&nbsp;import org.springframework.retry.annotation.Backoff;
+&nbsp;import org.springframework.retry.annotation.Retryable;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.mypayment.depositService.repo.depositRepo;
+&nbsp;import org.springframework.web.bind.annotation.ResponseBody;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;@Service
+&nbsp;@RestController
+<b class="nc">&nbsp;public class accountServiceCompensationDeposit {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private depositRepo depositRepo;
+&nbsp;
+<b class="nc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(accountServiceCompensationDeposit.class);</b>
+&nbsp;
+&nbsp;    @ResponseBody
+&nbsp;    @KafkaListener(topics= &quot;deposit-account-initiated&quot;,groupId = &quot;deposit-account-group&quot;)
+&nbsp;    @Retryable(value = retryException.class,
+&nbsp;            maxAttempts = 5 ,
+&nbsp;            backoff = @Backoff(delay = 1000, multiplier = 2))
+&nbsp;    public void compensationPostProcessingdeposit(depositDTO compDeposit){
+<b class="nc">&nbsp;        if(compDeposit.getTransactionStatus().equalsIgnoreCase(&quot;COMPLETED&quot;)&amp;&amp; compDeposit.getTransactionType().equalsIgnoreCase(&quot;DEPOSIT&quot;)){</b>
+<b class="nc">&nbsp;            deposit finalcompDeposit = depositMapper.mapTOdeposit(compDeposit,new deposit());</b>
+<b class="nc">&nbsp;            depositRepo.save(finalcompDeposit);</b>
+<b class="nc">&nbsp;            logger.info(&quot;Money has been deposited to account number {} with the balance {}&quot;,finalcompDeposit.getAccountNumber(),finalcompDeposit.getAmount());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            logger.error(&quot;Transaction was not successfull&quot;);</b>
+<b class="nc">&nbsp;            throw new invalidDataException(&quot;Check the account details&quot;);</b>
+&nbsp;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-02-20 19:15</div>
+</div>
+</body>
+</html>

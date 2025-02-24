@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > withdrawService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.mypayment.withdrawService.service</a>
+</div>
+
+<h1>Coverage Summary for Class: withdrawService (com.mypayment.withdrawService.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">withdrawService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.mypayment.withdrawService.service;
+&nbsp;
+&nbsp;
+&nbsp;import com.mypayment.withdrawService.DTO.withdrawDTO;
+&nbsp;import io.micrometer.core.instrument.Counter;
+&nbsp;import io.micrometer.core.instrument.MeterRegistry;
+&nbsp;import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.kafka.core.KafkaTemplate;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.concurrent.ThreadPoolExecutor;
+&nbsp;import java.util.concurrent.locks.Lock;
+&nbsp;import java.util.concurrent.locks.ReentrantLock;
+&nbsp;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class withdrawService {
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private KafkaTemplate&lt;String, Object&gt; sendUpdatetoAccountServicewithdraw;
+&nbsp;    private static final String withdrawUpdateTopic = &quot;withdraw-funds&quot;;
+&nbsp;    private final Counter withdrawCounter;
+&nbsp;    private final ThreadPoolExecutor executorServicewithdraw;
+<b class="fc">&nbsp;    private final Lock lock = new ReentrantLock();</b>
+<b class="fc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(withdrawService.class);</b>
+&nbsp;    private final MeterRegistry meterRegistry;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public withdrawService(MeterRegistry meterRegistry){</b>
+<b class="fc">&nbsp;        this.meterRegistry = meterRegistry;</b>
+<b class="fc">&nbsp;        this.withdrawCounter = meterRegistry.counter(&quot;withdrawService.withdraw&quot;);</b>
+<b class="fc">&nbsp;        this.executorServicewithdraw = new ThreadPoolExecutor(1,</b>
+&nbsp;                Integer.MAX_VALUE,
+&nbsp;                60L,
+&nbsp;                java.util.concurrent.TimeUnit.SECONDS,
+&nbsp;                new java.util.concurrent.LinkedBlockingQueue&lt;&gt;()
+&nbsp;        );
+<b class="fc">&nbsp;        ExecutorServiceMetrics.monitor(meterRegistry,this.executorServicewithdraw,&quot;withdrawService.executorService&quot;);</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    public void withdrawMoney(String accountNumber, double amount) {
+<b class="fc">&nbsp;        withdrawCounter.increment();</b>
+<b class="fc">&nbsp;        executorServicewithdraw.submit(() -&gt; {</b>
+<b class="fc">&nbsp;            lock.lock();</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                logger.info(&quot;Account number is {} and the amount withdraw is {}&quot;, accountNumber, amount);</b>
+<b class="fc">&nbsp;                withdrawDTO withdrawDTO = new withdrawDTO(accountNumber, amount, &quot;WITHDRAW&quot;, &quot;PENDING&quot;, LocalDateTime.now());</b>
+<b class="fc">&nbsp;                sendUpdatetoAccountServicewithdraw.send(withdrawUpdateTopic, withdrawDTO);</b>
+<b class="fc">&nbsp;                logger.info(&quot;Money has been withdrawn from account number {} with the amount {}&quot;, withdrawDTO.getAccountNumber(), withdrawDTO.getAmount());</b>
+&nbsp;            } finally {
+<b class="fc">&nbsp;                lock.unlock();</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-02-20 19:15</div>
+</div>
+</body>
+</html>
